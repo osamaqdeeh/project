@@ -18,9 +18,9 @@ app.get('/', (req, res) => {
 app.get('/login-facebook', async (req, res) => {
     let browser;
     try {
+        // إطلاق المتصفح بالاعتماد على التثبيت التلقائي لـ Puppeteer ووسائط الحماية للـ Docker
         browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
