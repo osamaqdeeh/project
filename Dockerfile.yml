@@ -1,6 +1,6 @@
 FROM node:18-slim
 
-# تثبيت الحزم والمكتبات الضرورية لعمل المتصفح في بيئة سحابية صامتة (Headless)
+# تثبيت جميع المكتبات والاعتماديات الأساسية لتشغيل الكروم في بيئة صامتة لـ Linux
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     libxcomposite1 \
     libxcursor1 \
     libxdamage1 \
-    libext6 \
+    libxext6 \
     libxfixes3 \
     libxi6 \
     libxrandr2 \
@@ -37,7 +37,6 @@ RUN apt-get update && apt-get install -y \
     libxss1 \
     libxtst6 \
     lsb-release \
-    wget \
     xdg-utils \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
@@ -45,7 +44,12 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+
+# تثبيت الحزم والمكتبات المذكورة في package.json
 RUN npm install
+
+# حسم المشكلة: إجبار السيرفر على تحميل كروم المتوافق يدويًا أثناء الـ Build
+RUN npx puppeteer browsers install chrome
 
 COPY . .
 
