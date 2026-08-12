@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
-// قراءة المتغيرات البيئية، واستخدام المفتاح السري (Secret Key) لضمان الصلاحيات الكاملة للخادم
+// قراءة المتغيرات البيئية واستخدام المفتاح السري (Secret Key) للصلاحيات الكاملة
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -20,7 +20,7 @@ app.get('/login-facebook', async (req, res) => {
     try {
         browser = await puppeteer.launch({
             headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
