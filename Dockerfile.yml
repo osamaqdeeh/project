@@ -1,6 +1,6 @@
 FROM node:18-slim
 
-# تثبيت جميع المكتبات والاعتماديات الأساسية لتشغيل الكروم في بيئة صامتة لـ Linux
+# تثبيت الاعتماديات والمكتبات الأساسية لتشغيل الكروم في بيئة صامتة لـ Linux
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -44,11 +44,12 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY .puppeteerrc.cjs ./
 
-# تثبيت الحزم والمكتبات المذكورة في package.json
+# تثبيت مكتبات نود
 RUN npm install
 
-# حسم المشكلة: إجبار السيرفر على تحميل كروم المتوافق يدويًا أثناء الـ Build
+# تحميل الكروم صراحة داخل مسار المشروع المؤطر والمحمي
 RUN npx puppeteer browsers install chrome
 
 COPY . .
