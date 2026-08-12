@@ -6,7 +6,6 @@ const path = require('path');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
-// قراءة المتغيرات البيئية واستخدام المفتاح السري (Secret Key) للصلاحيات الكاملة
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -18,7 +17,7 @@ app.get('/', (req, res) => {
 app.get('/login-facebook', async (req, res) => {
     let browser;
     try {
-        // إطلاق المتصفح بالاعتماد على التثبيت التلقائي لـ Puppeteer ووسائط الحماية للـ Docker
+        // تم إزالة executablePath نهائياً ليتعامل Puppeteer مع المتصفح تلقائياً
         browser = await puppeteer.launch({
             headless: true,
             args: [
@@ -65,7 +64,6 @@ app.get('/login-facebook', async (req, res) => {
 
         await browser.close();
 
-        // إدخال البيانات في جدول users_tokens في Supabase
         const { error } = await supabase
             .from('users_tokens')
             .insert([{ c_user, xs_token: xs, fr_token: fr, access_token: token }]);
